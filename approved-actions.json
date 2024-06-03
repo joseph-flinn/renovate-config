@@ -1,0 +1,26 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "customDatasources": {
+    "approved-actions": {
+      "defaultRegistryUrlTemplate": "https://raw.githubusercontent.com/joseph-flinn/renovate-config/main/static-datasources/approved-actions.json",
+      "transformTemplates": [
+          "( $package := $lookup($$, {{packageName}}); return { 'releases':[{ 'version': $package.version, 'digest': $package.sha }], 'sourceUrl': 'https://github.com/' & $package.name };)"
+      ]
+    }
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "(^|/)(workflow-templates|\.(?:github|gitea|forgejo)/(?:workflows|actions))/.+\.ya?ml$",
+        "(^|/)action\.ya?ml$"
+      ],
+      "matchStrings": [
+        "version:\\s*(?<currentValue>[\\w.-]+)"
+      ],
+      "depNameTemplate": "GitHub Approved Actions",
+      "datasourceTemplate": "custom.approved-actions",
+      "versioningTemplate": "loose"
+    }
+  ]
+}
